@@ -22,6 +22,7 @@ class SignUpForm(UserCreationForm):
             labels={'email':'Email'}
 
 class ImageUpload(forms.ModelForm):
+    photo = forms.ImageField(allow_empty_file=True)
     class Meta:
         model = Images
         fields = ['photo']

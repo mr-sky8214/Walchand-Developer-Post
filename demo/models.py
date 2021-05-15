@@ -38,7 +38,7 @@ class Student(models.Model):
     name = models.CharField(max_length=50)
     mail = models.CharField(max_length=200,unique=True)
     password = models.CharField(max_length=16)
-    photo = models.ImageField(upload_to='student/images',null = True,default="profile1.jpg")
+    photo = models.ImageField(upload_to='student/images',null = True,default="../media/profile1.jpg")
     github = models.URLField(blank=True, max_length=200,null = True)
     linked_in = models.URLField(blank= True, max_length=200,null = True)
     verified = models.BooleanField(default=False)
@@ -96,6 +96,7 @@ admin.site.register(Project_Guide_notification)
 
 class Images(models.Model):
     photo = models.ImageField(upload_to='tmp/images',null = True)
+
 
 
 admin.site.register(Images)

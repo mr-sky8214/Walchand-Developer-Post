@@ -1,6 +1,7 @@
 {% extends my_template %} {% block body %} {% if profile %}
 <script>
   document.getElementById("myProfile").src = "{{profile.url}}";
+  document.getElementById("myProfile1").src = "{{profile.url}}";
   console.log("{{profile}}");
 </script>
 {% endif %}
@@ -13,11 +14,8 @@
     <div class="small-12 columns">
       <div id="portfolio-user">
         <div id="portfolio-user-photo">
-          <img
-            alt="Vishal Jadhav&#39;s avatar"
-            class="user-photo gravatar_image image-replacement"
-            src="{{profile.url}}"
-          />
+          <img id = "myProfile1" alt="{{name}}";s avatar" class="user-photo
+          gravatar_image image-replacement" src="../media/Profile1.jpg" />
           <div>
             <a
               class="button small radius edit-settings-btn"
@@ -27,7 +25,7 @@
             <a
               class="button small radius secondary add-project-btn"
               data-reveal-id="hackathon-picker"
-              href="#"
+              href="{% url 'add_project' %}"
               >Add a new project</a
             >
             <div
@@ -143,7 +141,7 @@
         <nav id="portfolio-navigation">
           <ul>
             <li class="active">
-              <a href="/vishaljadhav9568">
+              <a href="#">
                 <div class="totals"><span>{{len}}</span></div>
                 Projects
               </a>

@@ -122,6 +122,7 @@ def user_login(request):
                         Student.objects.filter(username = uname).update(otp = getRandom())
                         return HttpResponseRedirect('/verification/')
                     else:
+                        # return redirect(request.META['HTTP_REFERER'])
                         return HttpResponseRedirect('/profile/')
         else:
             fm=AuthenticationForm()
@@ -140,6 +141,7 @@ def stu_verification(request):
         email_from = 'medicatorvs@gmail.com'
         recipient_list = [str(request.user.email), ]
         send_mail(subject, message, email_from, recipient_list)
+        print(student.otp)
         return render(request,'verification.html',{'name':request.user,'email':request.user.email,'msg':None})
     else:
         return HttpResponseRedirect('/login/')
@@ -175,6 +177,17 @@ def user_profile(request):
 
 def settings(request):
     params = {}
+    if request.method == 'POST':
+        image_upload = ImageUpload(request.POST,request.FILES)
+        if image_upload.is_valid():
+            image_upload.save()
+            photo = image_upload.cleaned_data['photo']
+            print(photo)
+            photo = '/media/tmp/' + str(photo)
+            Student.objects.filter(username = request.user).update(photo = photo)
+        else:
+            image_upload = ImageUpload()
+
     if request.user.is_authenticated:
         params['my_template'] = 'basic2.html'
         student = Student.objects.get(username = request.user)
@@ -187,13 +200,8 @@ def settings(request):
         params['last_name'] = last_name
         params['github'] = student.github
         params['linkedin'] = student.linked_in
-        fm = ImageUpload()
-        params['image_field']  = fm
-        if fm.is_valid():
-            pic = fm.cleaned_data['photo']
-            fm.save()
-            print('pic: ',pic)
-            Student.objects.filter(username=request.user).update(photo = pic)
+        params['form'] = image_upload
+
 
         # print(params)
     else:
@@ -238,13 +246,18 @@ def portfolio(request):
             project_list.append(dict)
 
         params['projects'] = project_list
-        params['profile'] = student.photo
+        if student.photo:
+            params['profile'] = student.photo
+        else:
+            params['profile'] = "../media/Profile1.jpg"
         params['name'] = student.name
         params['username'] = student.username
         params['len'] = len(projects)
         # print(params)
     else:
         return HttpResponseRedirect('/login/')
+
+
 
     return render(request, 'Portfolio.html', params)
 
