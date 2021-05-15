@@ -16,10 +16,10 @@ class SignUpForm(UserCreationForm):
             raise ValidationError("Email already exists")
         return email
 
-class Meta:
-        model=User
-        fields=['username','first_name','last_name','email']
-        labels={'email':'Email'}
+    class Meta:
+            model=User
+            fields=['username','first_name','last_name','email']
+            labels={'email':'Email'}
 
 class ImageUpload(forms.ModelForm):
     class Meta:

@@ -5,18 +5,37 @@
 </script>
 {% endif %}
 <header id="portfolio-header">
-  <div id="portfolio-cover" class="user-background-color user-background-image"></div>
+  <div
+    id="portfolio-cover"
+    class="user-background-color user-background-image"
+  ></div>
   <div class="row">
     <div class="small-12 columns">
       <div id="portfolio-user">
         <div id="portfolio-user-photo">
-          <img alt="Vishal Jadhav&#39;s avatar" class="user-photo gravatar_image image-replacement"
-            src="{{profile.url}}" />
+          <img
+            alt="Vishal Jadhav&#39;s avatar"
+            class="user-photo gravatar_image image-replacement"
+            src="{{profile.url}}"
+          />
           <div>
-            <a class="button small radius edit-settings-btn" href="{% url 'settings' %}">Edit info &amp; settings</a>
-            <a class="button small radius secondary add-project-btn" data-reveal-id="hackathon-picker" href="#">Add a
-              new project</a>
-            <div id="hackathon-picker" class="reveal-modal small" data-reveal data-hackathon-picker>
+            <a
+              class="button small radius edit-settings-btn"
+              href="{% url 'settings' %}"
+              >Edit info &amp; settings</a
+            >
+            <a
+              class="button small radius secondary add-project-btn"
+              data-reveal-id="hackathon-picker"
+              href="#"
+              >Add a new project</a
+            >
+            <div
+              id="hackathon-picker"
+              class="reveal-modal small"
+              data-reveal
+              data-hackathon-picker
+            >
               <a class="close-reveal-modal close-reveal-modal-x">&#215;</a>
               <div data-region="yes-no"></div>
               <div data-region="hackathon-picker"></div>
@@ -49,7 +68,9 @@
 
               <div class="clearfix tag-list">
                 <span class="cp-tag-heading left">
-                  <a href="https://devpost.com/settings/preferences_and_eligibility#skills-section">
+                  <a
+                    href="https://devpost.com/settings/preferences_and_eligibility#skills-section"
+                  >
                     <strong>Skills</strong>
                     <i class="fas fa-pen" aria-hidden="true"></i>
                   </a>
@@ -139,59 +160,60 @@
     </div>
   </div>
 
-  <div class="row">
-    <div class="small-12 columns">
-      <div class="content-section no-bottom">
-        <div class="row">
-          <div class="small-12 columns">
-            <div id="software-entries" class="portfolio-section">
-              <div class="row"></div>
-              {% for project in projects %}
-              
-              <div class="large-3 small-12 columns gallery-item" data-software-id="346089">
-                <a class="block-wrapper-link fade"
-                  href="{% url 'single_project' project.id project.name|slugify %}">
-                  <div class="software-entry gallery-entry fade draft" id="software_346089">
-                    <figure>
-                      <img alt="Disease Prediction and doctors consultation"
-                        class="software_thumbnail_image image-replacement"
-                        src="{{project.photo.url}}" />
-                        
-                      <figcaption>
-                        <div class="software-entry-name entry-body">
+  <div class="row software-row">
+    {% for project in projects %}
+    <div
+      class="large-3 small-12 columns gallery-item"
+      data-software-id="238764"
+    >
+      <a
+        class="block-wrapper-link fade link-to-software"
+        href="{% url 'single_project' project.id project.name|slugify %}"
+      >
+        <div
+          class="software-entry gallery-entry fade visible"
+          id="software_238764"
+        >
+          <figure>
+            <img
+              alt=""
+              class="software_thumbnail_image image-replacement"
+              onerror="this.onerror=null;this.src=&#39;https://devpost-challengepost.netdna-ssl.com/assets/defaults/thumbnail-placeholder-42bcab8d8178b413922ae2877d8b0868.gif&#39;;"
+              src="{{project.photo.url}}"
+            />
 
-                          <h5>
-                            {{project.name}}
-                          </h5>
+            <figcaption>
+              <div class="software-entry-name entry-body">
+                <h5>{{project.name}}</h5>
 
-                          <p class="small tagline">
-                            {{project.tag_line}}
-                          </p>
-                        </div>
-                      </figcaption>
-                    </figure>
-
-
-                    
-
-                    <!-- cache end -->
-
-                    <!-- <footer>
-                      <div class="small members ">
-                        <span nested_link="true" class="user-profile-link" data-nested-link="true"
-                          data-url="https://devpost.com/vishaljadhav9568"><img alt="Vishal Jadhav"
-                            class="user-photo gravatar_image image-replacement" title="vishaljadhav9568"
-                            onerror="this.onerror=null;this.src=&#39;https://devpost-challengepost.netdna-ssl.com/assets/defaults/no-avatar-100-17cf519ce6f8e4e0e83758ea09fc5eb3.png&#39;;"
-                            src="https://www.gravatar.com/avatar/116c63fa6fd65d5b6a6a1ad3ffdfba8a?d=https%3A%2F%2Fdevpost-challengepost.netdna-ssl.com%2Fassets%2Fdefaults%2Fno-avatar-25.png&amp;s=25" /></span>
-
-
-                      </div> -->
-                      {% endfor%}
-                  </div>
+                <p class="small tagline">{{project.tag_line}}</p>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
+            </figcaption>
+          </figure>
+
+          <!-- cache end -->
+
+          <footer>
+            <!-- <div class="small members ">
+              <span nested_link="true" class="user-profile-link" data-nested-link="true"
+                data-url="https://devpost.com/smayorquin"><img alt="Salma Mayorquin"
+                  class="user-photo photo_image image-replacement" title="smayorquin"
+                  onerror="this.onerror=null;this.src=&#39;https://devpost-challengepost.netdna-ssl.com/assets/defaults/no-avatar-100-17cf519ce6f8e4e0e83758ea09fc5eb3.png&#39;;"
+                  src="//challengepost-s3-challengepost.netdna-ssl.com/photos/production/user_photos/000/906/182/datas/small.png" /></span>
+              <span nested_link="true" class="user-profile-link" data-nested-link="true"
+                data-url="https://devpost.com/terryjrodriguez"><img alt="Terry Rodriguez"
+                  class="user-photo facebook_avatar_image image-replacement" title="terryjrodriguez"
+                  onerror="this.onerror=null;this.src=&#39;https://devpost-challengepost.netdna-ssl.com/assets/defaults/no-avatar-100-17cf519ce6f8e4e0e83758ea09fc5eb3.png&#39;;"
+                  src="https://media.licdn.com/dms/image/C5603AQFwzGqGmT9H5A/profile-displayphoto-shrink_800_800/0?e=1559174400&amp;t=yywUUjCVjoq5Fdrf_4z1Lt24eELG4ufbqyr1K8It7o4&amp;type=square&amp;v=beta" /></span>
+              
+
+            </div> -->
+          </footer>
+        </div></a
+      >
+    </div>
+
+    {% endfor %}
+  </div>
 </section>
 {% endblock %}

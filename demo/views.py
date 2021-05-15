@@ -6,6 +6,12 @@ from django.contrib.auth import authenticate,login,logout
 from django.http import  HttpResponse
 from django.shortcuts import redirect
 from .models import *
+from django.conf import settings
+from django.core.mail import send_mail
+import random
+
+def getRandom():
+    return random.randint(1000, 9999)
 
 def display_projects(request):
     opt = 0
@@ -113,7 +119,7 @@ def user_login(request):
                     messages.success(request,'Logged in successfully !!')
                     if(student.verified==False):
                         # updting otp
-                        Student.objects.filter(username = uname).update(otp = 1234)
+                        Student.objects.filter(username = uname).update(otp = getRandom())
                         return HttpResponseRedirect('/verification/')
                     else:
                         return HttpResponseRedirect('/profile/')
@@ -126,6 +132,14 @@ def user_login(request):
 
 def stu_verification(request):
     if request.user.is_authenticated:
+
+        student = Student.objects.get(username=request.user)
+
+        subject = 'Account Verification'
+        message = f'Hi ,Your OTP for verification is {student.otp}'
+        email_from = 'medicatorvs@gmail.com'
+        recipient_list = [str(request.user.email), ]
+        send_mail(subject, message, email_from, recipient_list)
         return render(request,'verification.html',{'name':request.user,'email':request.user.email,'msg':None})
     else:
         return HttpResponseRedirect('/login/')
@@ -150,7 +164,7 @@ def user_profile(request):
     if request.user.is_authenticated:
          student = Student.objects.get(username=request.user)
          if (student.verified == False):
-             Student.objects.filter(username=request.user).update(otp=1234)
+             Student.objects.filter(username=request.user).update(otp=getRandom())
              return HttpResponseRedirect('/verification/')
 
          return render(request,'profile.html',{'name':request.user,'profile':student.photo})
