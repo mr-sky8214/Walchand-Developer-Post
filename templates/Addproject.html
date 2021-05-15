@@ -1,0 +1,105 @@
+{% extends my_template %}
+
+{% block body %}
+
+{% if profile %}
+<script>
+  document.getElementById("myProfile").src = "{{profile.url}}";
+  console.log("{{profile}}");
+</script>
+{% endif %}
+<form method = "post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Upload</button>
+    </form>
+
+<!--<form action="" method="post" enctype="multipart/form-data" novalidate>-->
+<!--    {% csrf_token %}-->
+<!--    <div class="row col-12 email-form">-->
+<!--        <div class="form">-->
+<!--            <div class="field first-name">-->
+<!--                <div class="input string optional user_first_name"><label-->
+<!--                        class="string optional control-label white-label"-->
+<!--                        for="user_first_name">-->
+<!--&lt;!&ndash;                        {% for fm in form %}&ndash;&gt;-->
+<!--&lt;!&ndash;                        {{fm.label_tag}}{{fm}}&ndash;&gt;-->
+<!--&lt;!&ndash;                        <p class="er">{{fm.errors|striptags}}&ndash;&gt;-->
+<!--&lt;!&ndash;                        </p><br><br>&ndash;&gt;-->
+<!--&lt;!&ndash;                        {% endfor %}&ndash;&gt;-->
+<!--                    {{ form.as_p }}-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; <div class="field last-name">-->
+<!--                <div class="input string optional user_last_name"><label-->
+<!--                        class="string optional control-label white-label" for="user_last_name">Last-->
+<!--                        name</label><input data-required="true" data-maxlength="40"-->
+<!--                        data-trigger="focusout" class="string optional" placeholder="Last name"-->
+<!--                        type="text" value="" name="user[last_name]" id="user_last_name" /></div>-->
+<!--            </div>-->
+
+<!--            <div class="field email">-->
+<!--                <div class="input email optional user_email"><label-->
+<!--                        class="email optional control-label white-label"-->
+<!--                        for="user_email">Email</label><input data-type="email" data-required="true"-->
+<!--                        data-trigger="focusout" class="string email optional"-->
+<!--                        placeholder="Your email address" type="email" name="user[email]"-->
+<!--                        id="user_email" />-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="field password">-->
+<!--                <div class="input password optional user_password"><label-->
+<!--                        class="password optional control-label white-label"-->
+<!--                        for="user_password">Password</label><input data-minlength="8"-->
+<!--                        data-required="true" class="password optional" placeholder="Choose a password"-->
+<!--                        type="password" name="user[password]" id="user_password" /></div>-->
+<!--            </div>-->
+
+<!--&ndash;&gt;-->
+<!--{% if messages %}-->
+<!--{% for message in messages %}-->
+<!--{% if message.tags %}class="{{message.tags}}"{% endif %}-->
+<!--<script>-->
+
+<!--&lt;!&ndash;if("{{ message }}" == "Account Created Successfully !!")&ndash;&gt;-->
+<!--alert("{{ message }}");-->
+
+<!--</script>-->
+<!--{% endfor %}-->
+<!--{% endif %}-->
+
+<!--            -->
+<!--                &lt;!&ndash; <div class="button reimagine-button login-button">-->
+<!--                    <i class="far fa-envelope"></i>-->
+<!--                    <input type="submit" value="submit"> </input>-->
+<!--                </div>-->
+
+<!--            -->
+<!--            <input type="submit" value="Signup"> &ndash;&gt;-->
+<!--            <div class="field button-container">-->
+<!--                &lt;!&ndash; <input type="submit" value="submit"> &ndash;&gt;-->
+<!--                <button id="submit-form" class="button reimagine-button login-button" type="submit" value="submit">-->
+
+<!--                    <i class="far fa-envelope"></i> Add Project-->
+<!--                </button>-->
+<!--            </div>-->
+
+<!--            <div class="action bottom-section">-->
+
+<!--                <p>-->
+<!--                 Back to  <a href="/" >Walchand Developer post</a>-->
+<!--                </p>-->
+<!--              </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</form>-->
+
+
+
+
+
+
+{% endblock %}
+

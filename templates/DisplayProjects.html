@@ -1,7 +1,12 @@
-{% extends 'basic.html' %}
+{% extends my_template %}
 
 {% block body %}
-  
+{% if profile %}
+<script>
+  document.getElementById("myProfile").src = "{{profile.url}}";
+  console.log("{{profile}}");
+</script>
+{% endif %}
 
 
   <section id="container" class="">

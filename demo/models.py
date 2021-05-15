@@ -34,15 +34,16 @@ admin.site.register(Project)
 
 class Student(models.Model):
     id = models.AutoField(primary_key=True)
-    username = models.CharField(max_length=50)
+    username = models.CharField(max_length=50,unique=True)
     name = models.CharField(max_length=50)
-    mail = models.CharField(max_length=200)
+    mail = models.CharField(max_length=200,unique=True)
     password = models.CharField(max_length=16)
-    photo = models.ImageField(upload_to='student/images')
-    github = models.URLField(blank=True, max_length=200)
-    linked_in = models.URLField(blank= True, max_length=200)
+    photo = models.ImageField(upload_to='student/images',null = True,default="profile1.jpg")
+    github = models.URLField(blank=True, max_length=200,null = True)
+    linked_in = models.URLField(blank= True, max_length=200,null = True)
     verified = models.BooleanField(default=False)
-    otp = models.IntegerField()
+    otp = models.IntegerField(null = True)
+    is_active = models.BooleanField(default=True)
 
 admin.site.register(Student)
 
@@ -52,7 +53,7 @@ class Guide(models.Model):
     mail = models.CharField(max_length=200)
     password = models.CharField(max_length=16)
     verified = models.BooleanField(default=False)
-    otp = models.IntegerField()
+    otp = models.IntegerField(null = True)
 
 admin.site.register(Guide)
 
@@ -93,9 +94,10 @@ class Project_Guide_notification(models.Model):
 admin.site.register(Project_Guide_notification)
 
 
+class Images(models.Model):
+    photo = models.ImageField(upload_to='tmp/images',null = True)
 
 
-
-
+admin.site.register(Images)
 
 

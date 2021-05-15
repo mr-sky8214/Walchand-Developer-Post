@@ -1,4 +1,9 @@
-{% extends 'basic.html' %} {% block body %}
+{% extends my_template %} {% block body %} {% if profile %}
+<script>
+  document.getElementById("myProfile").src = "{{profile.url}}";
+  console.log("{{profile}}");
+</script>
+{% endif %}
 <section id="container" class="">
   <header class="page-header text-center" id="software-header">
     <div class="row">
@@ -119,7 +124,7 @@
 
           <p>{{project.we_learned}}</p>
 
-          <h2>What's next for No More COVID Confusion!</h2>
+          <h2>What's next for {{project.name}}</h2>
 
           <p>{{project.whats_next}}</p>
         </div>
