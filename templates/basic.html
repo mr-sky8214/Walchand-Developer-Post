@@ -55,10 +55,14 @@
 
   <!--[if gt IE 7]><!-->
   <script src="https://kit.fontawesome.com/0c13a9f144.js" crossorigin="anonymous"></script>
+  <!-- <link rel="stylesheet" media="screen"
+    href="https://devpost-challengepost.netdna-ssl.com/assets/reimagine2-066c07cd99ceff5c2f7f6d653054105d.css" /> -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'basic/css1.css' %}">
+    <link rel="stylesheet" href="{% static 'basic/css2.css' %}">
+    <!-- <link rel="stylesheet" href="{% static 'basic/css1.css' %}">
   <link rel="stylesheet" media="screen"
-    href="https://devpost-challengepost.netdna-ssl.com/assets/reimagine2-066c07cd99ceff5c2f7f6d653054105d.css" />
-  <link rel="stylesheet" media="screen"
-    href="https://devpost-challengepost.netdna-ssl.com/assets/home/home_application-08a18373de65590ec7a61e440d2d86aa.css" />
+    href="https://devpost-challengepost.netdna-ssl.com/assets/home/home_application-08a18373de65590ec7a61e440d2d86aa.css" /> -->
 
   <script
     src="https://devpost-challengepost.netdna-ssl.com/assets/modernizr-bef57869320b416d48fb2c5087d5e793.js"></script>
@@ -204,8 +208,9 @@
               </a></li>
 
             <li class="hide-for-small">
-              <form class="search-bar-form large flex-row" action="#">
-                <input type="search" name="search" id="search" title="Search" placeholder="Search Projects" />
+              <form method = 'get' class="search-bar-form large flex-row" action="/search/">
+                <input type="search" name="search" id="search" title="Search"
+                    placeholder="Search Projects" />
                 <button type="submit" class="button postfix dark">
                   <i class="fas fa-search"></i>
                 </button>

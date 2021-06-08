@@ -10,6 +10,16 @@
     <div class="small-12 large-9 columns">
       <form method="post" enctype="multipart/form-data">
         {% csrf_token %} {{ form.as_p }}
+
+        <label for="data1">Guide</label>
+        <input list="data1" name = "teacher">
+        <datalist id = "data1">
+          {% for i in guides %}
+            <option value="{{i}}">
+          {% endfor %}
+        </datalist>
+        <br>
+        <br>
         <button type="submit">Upload</button>
       </form>
       </div>

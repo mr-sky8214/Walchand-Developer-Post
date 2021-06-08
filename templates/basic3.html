@@ -55,12 +55,12 @@
 
     <!--[if gt IE 7]><!-->
     <script src="https://kit.fontawesome.com/0c13a9f144.js" crossorigin="anonymous"></script>
-    <!-- <link rel="stylesheet" media="screen"
-        href="https://devpost-challengepost.netdna-ssl.com/assets/reimagine2-066c07cd99ceff5c2f7f6d653054105d.css" /> -->
-        {% load static %}
+    {% load static %}
         <link rel="stylesheet" href="{% static 'basic/css1.css' %}">
         <link rel="stylesheet" href="{% static 'basic/css2.css' %}">
-        <!-- <link rel="stylesheet" media="screen"
+    <!-- <link rel="stylesheet" media="screen"
+        href="https://devpost-challengepost.netdna-ssl.com/assets/reimagine2-066c07cd99ceff5c2f7f6d653054105d.css" />
+    <link rel="stylesheet" media="screen"
         href="https://devpost-challengepost.netdna-ssl.com/assets/home/home_application-08a18373de65590ec7a61e440d2d86aa.css" /> -->
 
     <script
@@ -224,7 +224,11 @@
                                     Host a hackathon
                                 </a> </li>
                         </ul> -->
-
+                        <ul>
+                            <li>
+                                <a href="{% url 'guide_project_notification' %}"><i class="fa fa-bell fa-lg"></i><span class="counter counter-lg"><sup id = "notification"></sup></span>&nbsp;&nbsp;</a>                        
+                            </li>
+                        </ul>
                         <ul class="right logged-in">
 
 
@@ -257,9 +261,7 @@
                                     </li>
                                     <li class="divider"></li>
 
-                                    <li id="global-nav-help">
-                                        <a href="{% url 'add_project' %}">Add project</a>
-                                    </li>
+                                
 
                                     <li id="global-nav-help">
                                         <a href="#">Help</a>

@@ -1,9 +1,14 @@
-{% extends 'basic2.html' %} {% block body %} {% if profile %}
+{% extends my_template %} {% block body %} {% if profile %}
 <script>
   document.getElementById("myProfile").src = "{{profile.url}}";
   console.log("{{profile}}");
 </script>
-{% endif %} {% endblock %}
+{% endif %} {% if notifications %}
+<script>
+  document.getElementById("notification").innerText = "{{notifications}}";
+  //   console.log("{{profile}}");
+</script>
+{% endif %} {{notifications}} {% endblock %}
 <!-- <!DOCTYPE html>
 <html lang="en">
 <head>

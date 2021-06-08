@@ -13,10 +13,16 @@ import random
 def getRandom():
     return random.randint(1000, 9999)
 
+l = []
+def get_guides():
+    l.clear()
+    guides = Guide.objects.all()
+    for guide in guides:
+        l.append(guide.name)
+    l.append("Other")
+
+
 def display_projects(request):
-    opt = 0
-
-
     projects = Project.objects.all()
     project_list = []
     for project in projects:
@@ -26,12 +32,25 @@ def display_projects(request):
         tmp_dict['tagline'] = project.tag_line
         tmp_dict['photo'] = project.photo
         project_list.append(tmp_dict)
-
+    opt = 0
     params = {'projects' : project_list,'opt': opt}
     if request.user.is_authenticated:
         params['my_template'] = 'basic2.html'
-        student = Student.objects.get(username=request.user)
-        params['profile'] = student.photo
+        try:
+            student = Student.objects.get(username=request.user)
+            if student is not None:
+                params['profile'] = student.photo
+        except:
+            pass
+        try:
+            guide = Guide.objects.get(username=request.user)
+            if guide is not None:
+                params['my_template'] = 'basic3.html'
+                params['profile'] = guide.photo
+                projects = Project.objects.filter(project_guide__guide_id=guide, project_guide__accept=False)
+                params['notifications'] = len(projects)
+        except:
+            pass
     else:
         params['my_template'] = 'basic.html'
     # for p in params['projects']:
@@ -42,8 +61,21 @@ def homepage(request):
     params = {}
     if request.user.is_authenticated:
         params['my_template'] = 'basic2.html'
-        student = Student.objects.get(username = request.user)
-        params['profile'] = student.photo
+        try:
+            student = Student.objects.get(username=request.user)
+            if student is not None:
+                params['profile'] = student.photo
+        except:
+            pass
+        try:
+            guide = Guide.objects.get(username=request.user)
+            if guide is not None:
+                params['my_template'] = 'basic3.html'
+                params['profile'] = guide.photo
+                projects = Project.objects.filter(project_guide__guide_id=guide, project_guide__accept=False)
+                params['notifications'] = len(projects)
+        except:
+            pass
         # print(params)
     else:
         params['my_template'] = 'basic.html'
@@ -69,20 +101,164 @@ def single_project(request,id,slug):
     project_info['accomplishment'] = project.accomplishment
     project_info['we_learned'] = project.we_learned
     project_info['whats_next'] = project.whats_next
+    project_info['github'] = project.github
+    project_info['hosted'] = project.hosted
     # print(project_info)
     params = {'project' : project_info}
     if request.user.is_authenticated:
         params['my_template'] = 'basic2.html'
-        student = Student.objects.get(username=request.user)
-        params['profile'] = student.photo
+        try:
+            student = Student.objects.get(username=request.user)
+            if student is not None:
+                params['profile'] = student.photo
+        except:
+            pass
+        try:
+            guide = Guide.objects.get(username=request.user)
+            if guide is not None:
+                params['my_template'] = 'basic3.html'
+                params['profile'] = guide.photo
+                projects = Project.objects.filter(project_guide__guide_id=guide, project_guide__accept=False)
+                params['notifications'] = len(projects)
+        except:
+            pass
+
+
     else:
         params['my_template'] = 'basic.html'
     return render(request,'Project.html',params)
 
+
+def search(request):
+    query = request.GET.get('search')
+    query = query.lower()
+
+    projects = Project.objects.all()
+    # print(projects)
+
+
+
+    project_list = []
+    for project in projects:
+        if query in project.name.lower() or query in project.domain.lower() or query in str(project.year).lower() or query in project.guide.lower():
+            tmp_dict = {}
+            tmp_dict['id'] = project.id
+            tmp_dict['name'] = project.name
+            tmp_dict['tagline'] = project.tag_line
+            tmp_dict['photo'] = project.photo
+            tmp_dict['domain'] = project.domain
+            tmp_dict['guide'] = project.guide
+            project_list.append(tmp_dict)
+
+
+
+    params = {'projects': project_list}
+    if request.user.is_authenticated:
+        params['my_template'] = 'basic2.html'
+        try:
+            student = Student.objects.get(username=request.user)
+            if student is not None:
+                params['profile'] = student.photo
+        except:
+            pass
+        try:
+            guide = Guide.objects.get(username=request.user)
+            if guide is not None:
+                params['my_template'] = 'basic3.html'
+                params['profile'] = guide.photo
+                projects = Project.objects.filter(project_guide__guide_id=guide, project_guide__accept=False)
+                params['notifications'] = len(projects)
+        except:
+            pass
+    else:
+        params['my_template'] = 'basic.html'
+    # for p in params['projects']:
+    #     print(p)
+    return render(request, "DisplayProjects.html", params)
 # def login(request):
 #     if request.method == 'POST':
 #         return HttpResponse("Post")
 #     return HttpResponse("Gandal")
+
+# def sign_up(request):
+#     if request.method=="POST":
+#         fm=SignUpForm(request.POST)
+#         if fm.is_valid():
+#             messages.success(request,'Account Created Successfully !!')
+#             fm.save()
+#             email = fm.cleaned_data['email']
+#             username = fm.cleaned_data['username']
+#             password = fm.cleaned_data['password1']
+#             first_name = fm.cleaned_data['first_name']
+#             last_name = fm.cleaned_data['last_name']
+#             # print(email,username,password,first_name,last_name)
+#             student = Student(username = username,name = first_name+" "+last_name, mail = email, password = password)
+#             student.save()
+#     else:
+#         fm=SignUpForm()
+#
+#     return render(request,'signup1.html',{'form':fm})
+#
+#
+def user_login(request):
+    if not request.user.is_authenticated:
+        if request.method=='POST':
+            fm=AuthenticationForm(request=request,data=request.POST)
+            if fm.is_valid():
+                uname=fm.cleaned_data['username']
+                upass=fm.cleaned_data['password']
+                user = authenticate(username=uname,password=upass)
+                if user is not None:
+                    try:
+                        student = Student.objects.get(username=uname)
+                        if student is not None:
+                            login(request, user)
+                            messages.success(request,'Logged in successfully !!')
+                            if(student.verified==False):
+                                # updting otp
+                                Student.objects.filter(username = uname).update(otp = getRandom())
+                                return HttpResponseRedirect('/verification/')
+                            else:
+                                # return redirect(request.META['HTTP_REFERER'])
+                                return HttpResponseRedirect('/profile/')
+                    except:
+                        pass
+                    try:
+                        guide = Guide.objects.get(username=uname)
+                        if guide is not None:
+                            login(request, user)
+                            messages.success(request, 'Logged in successfully !!')
+                            if (guide.verified == False):
+                                # updting otp
+                                Guide.objects.filter(username=uname).update(otp=getRandom())
+                                return HttpResponseRedirect('/verification/')
+                            else:
+                                # return redirect(request.META['HTTP_REFERER'])
+                                return HttpResponseRedirect('/profile/')
+                    except:
+                        pass
+
+        else:
+            fm=AuthenticationForm()
+        #fm=AuthenticationForm()
+        return render(request,'StuLogin.html',{'form':fm})
+    else:
+        return HttpResponseRedirect('/profile/')
+#
+# def stu_verification(request):
+#     if request.user.is_authenticated:
+#
+#         student = Student.objects.get(username=request.user)
+#
+#         subject = 'Account Verification'
+#         message = f'Hi ,Your OTP for verification is {student.otp}'
+#         email_from = 'medicatorvs@gmail.com'
+#         recipient_list = [str(request.user.email), ]
+#         send_mail(subject, message, email_from, recipient_list)
+#         print(student.otp)
+#         return render(request,'verification.html',{'name':request.user,'email':request.user.email,'msg':None})
+#     else:
+#         return HttpResponseRedirect('/login/')
 
 def sign_up(request):
     if request.method=="POST":
@@ -96,6 +272,7 @@ def sign_up(request):
             first_name = fm.cleaned_data['first_name']
             last_name = fm.cleaned_data['last_name']
             # print(email,username,password,first_name,last_name)
+            # Remember to change to student
             student = Student(username = username,name = first_name+" "+last_name, mail = email, password = password)
             student.save()
     else:
@@ -103,44 +280,43 @@ def sign_up(request):
 
     return render(request,'signup1.html',{'form':fm})
 
-def user_login(request):
-    if not request.user.is_authenticated:
-        if request.method=='POST':
-            fm=AuthenticationForm(request=request,data=request.POST)
-            if fm.is_valid():
-                uname=fm.cleaned_data['username']
-                upass=fm.cleaned_data['password']
-                user = authenticate(username=uname,password=upass)
-                if user is not None:
-                    student = Student.objects.get(username=uname)
-                    # print(student.username)
-                    # print(student.verified)
-                    login(request, user)
-                    messages.success(request,'Logged in successfully !!')
-                    if(student.verified==False):
-                        # updting otp
-                        Student.objects.filter(username = uname).update(otp = getRandom())
-                        return HttpResponseRedirect('/verification/')
-                    else:
-                        # return redirect(request.META['HTTP_REFERER'])
-                        return HttpResponseRedirect('/profile/')
-        else:
-            fm=AuthenticationForm()
-        #fm=AuthenticationForm()
-        return render(request,'StuLogin.html',{'form':fm})
-    else:
-        return HttpResponseRedirect('/profile/')
+
+# def user_login(request):
+#     if not request.user.is_authenticated:
+#         if request.method=='POST':
+#             fm=AuthenticationForm(request=request,data=request.POST)
+#             if fm.is_valid():
+#                 uname=fm.cleaned_data['username']
+#                 upass=fm.cleaned_data['password']
+#                 user = authenticate(username=uname,password=upass)
+#                 if user is not None:
+#                     guide = Guide.objects.get(username=uname)
+#                     login(request, user)
+#                     messages.success(request,'Logged in successfully !!')
+#                     if(guide.verified==False):
+#                         # updting otp
+#                         Guide.objects.filter(username = uname).update(otp = getRandom())
+#                         return HttpResponseRedirect('/verification/')
+#                     else:
+#                         # return redirect(request.META['HTTP_REFERER'])
+#                         return HttpResponseRedirect('/profile/')
+#         else:
+#             fm=AuthenticationForm()
+#         #fm=AuthenticationForm()
+#         return render(request,'StuLogin.html',{'form':fm})
+#     else:
+#         return HttpResponseRedirect('/profile/')
 
 def stu_verification(request):
     if request.user.is_authenticated:
 
-        student = Student.objects.get(username=request.user)
+        student = Guide.objects.get(username=request.user)
 
-        subject = 'Account Verification'
-        message = f'Hi ,Your OTP for verification is {student.otp}'
-        email_from = 'medicatorvs@gmail.com'
-        recipient_list = [str(request.user.email), ]
-        send_mail(subject, message, email_from, recipient_list)
+        # subject = 'Account Verification'
+        # message = f'Hi ,Your OTP for verification is {student.otp}'
+        # email_from = 'medicatorvs@gmail.com'
+        # recipient_list = [str(request.user.email), ]
+        # send_mail(subject, message, email_from, recipient_list)
         print(student.otp)
         return render(request,'verification.html',{'name':request.user,'email':request.user.email,'msg':None})
     else:
@@ -151,25 +327,61 @@ def verify_otp(request):
         if request.method == 'POST':
             otp = request.POST.get('otp')
             # print(otp)
-            student = Student.objects.get(username = request.user)
+            student = Guide.objects.get(username = request.user)
 
             if(str(student.otp) == otp):
                 # print("Jamal")
-                Student.objects.filter(username = request.user).update(verified = True)
+                Guide.objects.filter(username = request.user).update(verified = True)
                 return HttpResponseRedirect('/profile/')
             else:
                 return render(request,'verification.html',{'name':request.user,'email':request.user.email,'msg':"Entered Wrong OTP ,please enter correct OTP"})
     else:
         return HttpResponseRedirect('/login/')
 
-def user_profile(request):
-    if request.user.is_authenticated:
-         student = Student.objects.get(username=request.user)
-         if (student.verified == False):
-             Student.objects.filter(username=request.user).update(otp=getRandom())
-             return HttpResponseRedirect('/verification/')
+# def verify_otp(request):
+#     if request.user.is_authenticated:
+#         if request.method == 'POST':
+#             otp = request.POST.get('otp')
+#             # print(otp)
+#             student = Student.objects.get(username = request.user)
+#
+#             if(str(student.otp) == otp):
+#                 # print("Jamal")
+#                 Student.objects.filter(username = request.user).update(verified = True)
+#                 return HttpResponseRedirect('/profile/')
+#             else:
+#                 return render(request,'verification.html',{'name':request.user,'email':request.user.email,'msg':"Entered Wrong OTP ,please enter correct OTP"})
+#     else:
+#         return HttpResponseRedirect('/login/')
 
-         return render(request,'profile.html',{'name':request.user,'profile':student.photo})
+def user_profile(request):
+
+    if request.user.is_authenticated:
+         try:
+            student = Student.objects.get(username=request.user)
+            if student is not None:
+                if (student.verified == False):
+                    Student.objects.filter(username=request.user).update(otp=getRandom())
+                    return HttpResponseRedirect('/verification/')
+
+                return render(request, 'profile.html', {'name': request.user, 'profile': student.photo,'my_template':'basic2.html'})
+         except:
+             pass
+         try:
+            guide = Guide.objects.get(username=request.user)
+
+            if (guide.verified == False):
+                Guide.objects.filter(username=request.user).update(otp=getRandom())
+                return HttpResponseRedirect('/verification/')
+            projects = Project.objects.filter(project_guide__guide_id=guide, project_guide__accept=False)
+
+            return render(request, 'profile.html', {'name': request.user, 'profile': guide.photo,'my_template':'basic3.html','notification':len(projects)})
+            # return render(request, 'profile.html', {'name': request.user, 'profile': guide.photo,'my_template':'basic3.html'})
+         except:
+             pass
+
+
+
     else:
         return HttpResponseRedirect('/login/')
 
@@ -177,44 +389,77 @@ def user_profile(request):
 
 def settings(request):
     params = {}
-    if request.method == 'POST':
-        image_upload = ImageUpload(request.POST,request.FILES)
-        if image_upload.is_valid():
-            image_upload.save()
-            photo = image_upload.cleaned_data['photo']
-            print(photo)
-            photo = '/media/tmp/' + str(photo)
-            Student.objects.filter(username = request.user).update(photo = photo)
-        else:
-            image_upload = ImageUpload()
+    # if request.method == 'POST':
+    #     image_upload = ImageUpload(request.POST,request.FILES)
+    #     if image_upload.is_valid():
+    #         image_upload.save()
+    #         photo = image_upload.cleaned_data['photo']
+    #         print(photo)
+    #         photo = '/media/tmp/' + str(photo)
+    #         Student.objects.filter(username = request.user).update(photo = photo)
+    #     else:
+    #         image_upload = ImageUpload()
 
     if request.user.is_authenticated:
+        # image_upload = ImageUpload()
         params['my_template'] = 'basic2.html'
-        student = Student.objects.get(username = request.user)
-        name = student.name
-        li = name.split()
-        first_name = li[0]
-        last_name = li[1]
-        params['profile'] = student.photo
-        params['first_name'] = first_name
-        params['last_name'] = last_name
-        params['github'] = student.github
-        params['linkedin'] = student.linked_in
-        params['form'] = image_upload
+        try:
+            student = Student.objects.get(username = request.user)
+            if student is not  None:
+                name = student.name
+                li = name.split()
+                first_name = li[0]
+                last_name = li[1]
+                params['profile'] = student.photo
+                params['first_name'] = first_name
+                params['last_name'] = last_name
+                params['github'] = student.github
+                params['linkedin'] = student.linked_in
+                # params['form'] = image_upload
+                return render(request, 'Settings.html', params)
+        except:
+            pass
+        try:
+            # params['my_template'] = 'basic3.html'
+            params['my_template'] = 'basic3.html'
+            guide = Guide.objects.get(username=request.user)
+            print(guide)
+            if guide is not None:
+                name = guide.name
+                li = name.split()
+                first_name = li[0]
+                last_name = li[1]
+                params['profile'] = guide.photo
+                params['first_name'] = first_name
+                params['last_name'] = last_name
+                # print(guide.github,guide.linked_in)
+                # params['form'] = image_upload
+                if guide.github is not None:
+                    params['github'] = guide.github
+                if guide.linked_in is not  None:
+                    params['linkedin'] = guide.linked_in
+                projects = Project.objects.filter(project_guide__guide_id=guide, project_guide__accept=False)
+                params['notifications'] = len(projects)
+                return render(request, 'Settings.html', params)
+
+
+
+        except:
+            pass
 
 
         # print(params)
     else:
         return HttpResponseRedirect('/login/')
 
-    return render(request,'Settings.html',params)
+
 
 def save_changes(request):
     params = {}
     if request.user.is_authenticated:
         if request.method == 'POST':
-            pic = request.POST.get('profile')
-            print('pic: ',pic)
+            pic = request.POST.get("image")
+            print("---------------------------------------",pic)
             name = request.POST.get('first_name')
             name += " " + request.POST.get('last_name')
             github = request.POST.get('github')
@@ -231,49 +476,101 @@ def portfolio(request):
     params = {}
     if request.user.is_authenticated:
         params['my_template'] = 'basic2.html'
-        student = Student.objects.get(username=request.user)
-        projects = Project.objects.filter(project_student__student_id=student)
-        # print(projects)
-        project_list = []
-        for project in projects:
-            dict = {}
+        try:
+            student = Student.objects.get(username=request.user)
+            print(student)
+            if student is not None:
+                projects = Project.objects.filter(project_student__student_id=student)
+                # print(projects)
+                project_list = []
 
-            # print(p)
-            dict['id'] = project.id
-            dict['photo'] = project.photo
-            dict['name'] = project.name
-            dict['tag_line'] = project.tag_line
-            project_list.append(dict)
+                for project in projects:
+                    dict = {}
 
-        params['projects'] = project_list
-        if student.photo:
-            params['profile'] = student.photo
-        else:
-            params['profile'] = "../media/Profile1.jpg"
-        params['name'] = student.name
-        params['username'] = student.username
-        params['len'] = len(projects)
+                    # print(p)
+                    dict['id'] = project.id
+                    dict['photo'] = project.photo
+                    dict['name'] = project.name
+                    dict['tag_line'] = project.tag_line
+                    dict['verified'] = project.verified
+                    project_list.append(dict)
+
+                params['projects'] = project_list
+                if student.photo:
+                    params['profile'] = student.photo
+                else:
+                    params['profile'] = "../media/Profile1.jpg"
+                params['name'] = student.name
+                params['username'] = student.username
+                params['len'] = len(projects)
+                return render(request, 'Portfolio.html', params)
+        except:
+            pass
+        try:
+            guide = Guide.objects.get(username=request.user)
+            if guide is not None:
+                params['my_template'] = 'basic3.html'
+                projects = Project.objects.filter(project_guide__guide_id=guide,project_guide__accept = True)
+                # print(projects)
+                project_list = []
+                for project in projects:
+                    dict = {}
+
+                    # print(p)
+                    dict['id'] = project.id
+                    dict['photo'] = project.photo
+                    dict['name'] = project.name
+                    dict['tag_line'] = project.tag_line
+                    project_list.append(dict)
+
+                params['projects'] = project_list
+                if guide.photo:
+                    params['profile'] = guide.photo
+                else:
+                    params['profile'] = "../media/Profile1.jpg"
+                params['name'] = guide.name
+                params['username'] = guide.username
+                projects = Project.objects.filter(project_guide__guide_id=guide, project_guide__accept=False)
+                params['notifications'] = len(projects)
+                # params['len'] = len(projects)
+                return render(request, 'Portfolio.html', params)
+        except:
+            pass
+
         # print(params)
     else:
         return HttpResponseRedirect('/login/')
 
 
 
-    return render(request, 'Portfolio.html', params)
+
 
 
 def add_project(request):
+    get_guides()
     if request.method=="POST":
         fm=AddProject(request.POST,request.FILES)
         if fm.is_valid():
             messages.success(request,'Successfully Added')
             fm.save()
             student = Student.objects.get(username=request.user)
-            # s_id = student.id
+
             project = Project.objects.filter(name = fm.cleaned_data['name'], tag_line = fm.cleaned_data['tag_line'])[0]
-            # p_id = project.id
+
             pro = Project_Student(project_id=project, student_id=student)
             pro.save()
+            teacher = request.POST.get("teacher")
+            if teacher == "Other":
+                (Project.objects.filter(name = fm.cleaned_data['name'], tag_line = fm.cleaned_data['tag_line'])[0]).update(verified = True)
+                return HttpResponseRedirect('/portfolio/')
+            guide = Guide.objects.get(name = teacher)
+            project.guide = teacher
+            project.save()
+            print(type(guide))
+            pro_gui = Project_Guide(project_id = project, guide_id = guide)
+            pro_gui.save()
+            # mail to teacher
+
 
             return HttpResponseRedirect('/portfolio/')
 
@@ -290,6 +587,7 @@ def add_project(request):
         params['name'] = student.name
         params['username'] = student.username
         params['form'] = fm
+        params['guides'] = l
     else:
         return HttpResponseRedirect('/login/')
     return render(request,'Addproject.html',params)
@@ -394,6 +692,70 @@ def add_project(request):
     #     return HttpResponseRedirect('/login/')
     #
     # return render(request,'Addproject.html',params)
+
+def guide_project_notification(request):
+    if request.user.is_authenticated:
+        params = {}
+        if request.method == 'POST':
+            # print("POST")
+            project_id = request.POST.get('project_id')
+            # print(project_id)
+            status = request.POST.get('status')
+            # print(status)
+            project = Project.objects.get(id = project_id)
+            # print(project)
+            # student = Student.objects.filter(Project_Student__Project_id = project)[0]
+            student = Student.objects.filter(project_student__project_id=project)
+            # print(student)
+            guide = Guide.objects.get(username = request.user)
+            if status == 'accept':
+                Project_Guide.objects.filter(project_id = project, guide_id = guide).update(accept = True)
+                project.verified = True
+                project.guide = guide.name
+                project.save()
+            else:
+                Project_Guide.objects.filter(project_id=project, guide_id=guide).delete()
+            # print(guide)
+
+        try:
+            guide = Guide.objects.get(username = request.user)
+            if guide is None:
+                return HttpResponseRedirect('/login/')
+            projects = Project.objects.filter(project_guide__guide_id=guide,project_guide__accept=False)
+            # print(projects)
+            project_list = []
+
+            for project in projects:
+                dict = {}
+
+                # print(p)
+                dict['id'] = project.id
+                dict['photo'] = project.photo
+                dict['name'] = project.name
+                dict['tag_line'] = project.tag_line
+                if project.verified:
+                    dict['verified'] = "Accepted"
+                else:
+                    dict['verified'] = "Pending"
+                project_list.append(dict)
+
+            params['projects'] = project_list
+            params['notifications'] = len(projects)
+            if guide.photo:
+                params['profile'] = guide.photo
+            else:
+                params['profile'] = "../media/Profile1.jpg"
+            params['name'] = guide.name
+            params['username'] = guide.username
+            params['my_template'] = 'basic3.html'
+
+            return render(request,'Notifications.html',params)
+
+        except:
+            return HttpResponseRedirect('/login/')
+
+
+
 
 
 

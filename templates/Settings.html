@@ -54,11 +54,11 @@
                 src="{{profile.url}}"
               />
             </figure>
-            <form method = "post" enctype="multipart/form-data">
+            <!-- <form method = "post" enctype="multipart/form-data">
               {% csrf_token %}
               {{ form.as_p }}
               <button type="submit">Upload</button>
-          </form>
+          </form> -->
 
             <form
               id="settings-avatar-form"
@@ -145,8 +145,24 @@
                 name="authenticity_token"
                 value="y95fU3kQAUppdKDxD3jeF50gr/82hGPV98iFKfi5dZJViRZSPlazJfKWCL+B/ELAQHiJ+v9K4mci/Hq42Fv8ZQ=="
               />
+              <div class="small-12 large-6 columns">
+                <div class="input string optional user_first_name">
+                  <label
+                    class="string optional control-label"
+                    for="user_first_name"
+                    >Choose Profile picture</label
+                  ><input
+                    class="string optional"
+                    type="file"
+                    value="{{profile.image}}"
+                    name="image"
+                    accept="image/*"
+                  />
+                </div>
+              </div>
 
               <div class="row">
+
                 <div class="small-12 large-6 columns">
                   <div class="input string optional user_first_name">
                     <label

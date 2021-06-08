@@ -3,7 +3,13 @@
   document.getElementById("myProfile").src = "{{profile.url}}";
   console.log("{{profile}}");
 </script>
+{% endif %} {% if notifications %}
+<script>
+  document.getElementById("notification").innerText = "{{notifications}}";
+  //   console.log("{{profile}}");
+</script>
 {% endif %}
+
 <section id="container" class="">
   <header class="page-header text-center" id="software-header">
     <div class="row">
@@ -88,11 +94,16 @@
         </div>
 
         <div>
-          <h2>Inspiration</h2>
+          <h3>Domain</h3>
+          <p>{{project.domain}}</p>
+
+          <h3>Guide</h3>
+          <p>{{project.guide}}</p>
+          <h3>Inspiration</h3>
 
           <p>{{project.inspiration}}</p>
 
-          <h2>What it does</h2>
+          <h3>What it does</h3>
 
           <p>{{project.what_it_does}}</p>
 
@@ -103,7 +114,7 @@
             model can also classify COVID-19 with 99% accuracy.
           </p> -->
 
-          <h2>How we built it</h2>
+          <h3>How we built it</h3>
 
           <p>{{project.how_we_build}}</p>
 
@@ -112,21 +123,34 @@
             notebooks with 1 GPU accelerator and 4 Virtual CPUs.
           </p> -->
 
-          <h2>Challenges we ran into</h2>
+          <h3>Challenges we ran into</h3>
 
           <p>{{project.challenges}}</p>
 
-          <h2>Accomplishments that we're proud of</h2>
+          <h3>Accomplishments that we're proud of</h3>
 
           <p>{{project.accomplishment}}</p>
 
-          <h2>What we learned</h2>
+          <h3>What we learned</h3>
 
           <p>{{project.we_learned}}</p>
 
-          <h2>What's next for {{project.name}}</h2>
+          <h3>What's next for {{project.name}}</h3>
 
           <p>{{project.whats_next}}</p>
+
+          <a href="{{project.github}}" target="_blank"
+            ><i class="fa fa-github fa-lg" aria-hidden="true"></i> Source
+            Code</a
+          >
+          <br />
+          <br />
+
+          {% if project.hosted %}
+          <a href="{{project.hosted}}" target="_blank"
+            ><i class="fa fa-link fa-lg" aria-hidden="true"></i> Try It</a
+          >
+          {% endif %}
         </div>
 
         <!-- <div id="built-with" class="">
