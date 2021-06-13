@@ -33,7 +33,7 @@ def display_projects(request):
         tmp_dict['photo'] = project.photo
         project_list.append(tmp_dict)
     opt = 0
-    params = {'projects' : project_list,'opt': opt}
+    params = {'projects' : project_list,'opt': opt,'info': 'top projects'}
     if request.user.is_authenticated:
         params['my_template'] = 'basic2.html'
         try:
@@ -139,8 +139,12 @@ def search(request):
 
 
     project_list = []
+    name = []
+    year = []
+    domain = []
+    guide = []
     for project in projects:
-        if query in project.name.lower() or query in project.domain.lower() or query in str(project.year).lower() or query in project.guide.lower():
+        if query in project.name.lower() or query in project.domain.lower() or query == str(project.year).lower() or query in project.guide.lower():
             tmp_dict = {}
             tmp_dict['id'] = project.id
             tmp_dict['name'] = project.name
@@ -148,11 +152,107 @@ def search(request):
             tmp_dict['photo'] = project.photo
             tmp_dict['domain'] = project.domain
             tmp_dict['guide'] = project.guide
+
+            if query in project.name.lower():
+                name.append(tmp_dict)
+
+            if query in project.domain.lower():
+                domain.append(tmp_dict)
+
+            if query == str(project.year).lower():
+                year.append(tmp_dict)
+
+            if query in project.guide.lower():
+                guide.append(tmp_dict)
+
+
+    if len(name) > 4:
+        name = name[:4]
+
+    if len(domain) > 4:
+        domain = domain[:4]
+
+    if len(year) > 4:
+        year = year[:4]
+
+    if len(guide) > 4:
+        guide = guide[:4]
+
+
+
+
+
+    params = {'name': name, 'domain': domain, 'year': year, 'guide' : guide, 'search': query}
+    if len(name) is 0 and len(domain) is 0 and len(year) is 0 and len(guide) is 0:
+        params['msg'] = 'no'
+
+    if request.user.is_authenticated:
+        params['my_template'] = 'basic2.html'
+        try:
+            student = Student.objects.get(username=request.user)
+            if student is not None:
+                params['profile'] = student.photo
+        except:
+            pass
+        try:
+            guide = Guide.objects.get(username=request.user)
+            if guide is not None:
+                params['my_template'] = 'basic3.html'
+                params['profile'] = guide.photo
+                projects = Project.objects.filter(project_guide__guide_id=guide, project_guide__accept=False)
+                params['notifications'] = len(projects)
+        except:
+            pass
+    else:
+        params['my_template'] = 'basic.html'
+    # for p in params['projects']:
+    #     print(p)
+    return render(request, "SearchResult.html", params)
+
+def view_search(request,heading,search):
+    projects = Project.objects.all()
+    project_list = []
+    print(heading,search)
+    info = ''
+    for project in projects:
+        if heading == 'name' and search.lower() in project.name.lower():
+            tmp_dict = {}
+            tmp_dict['id'] = project.id
+            tmp_dict['name'] = project.name
+            tmp_dict['tagline'] = project.tag_line
+            tmp_dict['photo'] = project.photo
             project_list.append(tmp_dict)
+            info = 'projects with name ' + search
 
+        elif heading == 'domain' and search.lower() in project.domain.lower():
+            tmp_dict = {}
+            tmp_dict['id'] = project.id
+            tmp_dict['name'] = project.name
+            tmp_dict['tagline'] = project.tag_line
+            tmp_dict['photo'] = project.photo
+            project_list.append(tmp_dict)
+            info = 'projects built with ' + search
 
+        elif heading == 'guide' and search.lower() in project.guide.lower():
+            tmp_dict = {}
+            tmp_dict['id'] = project.id
+            tmp_dict['name'] = project.name
+            tmp_dict['tagline'] = project.tag_line
+            tmp_dict['photo'] = project.photo
+            project_list.append(tmp_dict)
+            info = 'projects done under ' + search
 
-    params = {'projects': project_list}
+        elif heading == 'year' and search.lower() == str(project.year).lower():
+            tmp_dict = {}
+            tmp_dict['id'] = project.id
+            tmp_dict['name'] = project.name
+            tmp_dict['tagline'] = project.tag_line
+            tmp_dict['photo'] = project.photo
+            project_list.append(tmp_dict)
+            info = 'projects built in ' + search
+
+    opt = 0
+    params = {'projects': project_list, 'opt': opt, 'info':info}
     if request.user.is_authenticated:
         params['my_template'] = 'basic2.html'
         try:
@@ -175,6 +275,7 @@ def search(request):
     # for p in params['projects']:
     #     print(p)
     return render(request, "DisplayProjects.html", params)
+
 # def login(request):
 #     if request.method == 'POST':
 #         return HttpResponse("Post")

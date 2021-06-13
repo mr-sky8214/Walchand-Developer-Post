@@ -12,6 +12,7 @@ urlpatterns = [
     path('logout/', views.user_logout, name='logout'),
     path("projects/",views.display_projects,name = 'display_projects'),
     path("projects/<int:id>/<slug:slug>",views.single_project,name = 'single_project'),
+    path("projects/<str:heading>/<str:search>",views.view_search, name = 'view_search'),
     path("search/",views.search,name = "search"),
     path('verification/',views.stu_verification,name='stu_verification'),
     path('verify_otp/',views.verify_otp,name= 'verify_otp'),
