@@ -20,7 +20,7 @@
       </div>
     </div>
 
-    <div class="row">
+    <!-- <div class="row">
       <div class="small-12 columns">
         <div class="software-likes">
           <div data-like="base">
@@ -31,7 +31,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
   </header>
 
   <nav id="software-nav">
@@ -99,8 +99,14 @@
 
           <h3>Guide</h3>
           <p>{{project.guide}}</p>
-          <h3>Inspiration</h3>
 
+          <h3>Year of Development</h3>
+          <p>{{project.year}}</p>
+
+          <h3>Sem</h3>
+          <p>{{project.sem}}</p>
+
+          <h3>Inspiration</h3>
           <p>{{project.inspiration}}</p>
 
           <h3>What it does</h3>
@@ -138,11 +144,12 @@
           <h3>What's next for {{project.name}}</h3>
 
           <p>{{project.whats_next}}</p>
-
+          {% if project.github %}
           <a href="{{project.github}}" target="_blank"
             ><i class="fa fa-github fa-lg" aria-hidden="true"></i> Source
             Code</a
           >
+          {% endif %}
           <br />
           <br />
 

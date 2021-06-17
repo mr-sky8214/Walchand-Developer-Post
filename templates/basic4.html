@@ -57,17 +57,15 @@
     <script src="https://kit.fontawesome.com/0c13a9f144.js" crossorigin="anonymous"></script>
     <!-- <link rel="stylesheet" media="screen"
         href="https://devpost-challengepost.netdna-ssl.com/assets/reimagine2-066c07cd99ceff5c2f7f6d653054105d.css" /> -->
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'basic/css1.css' %}">
-    <link rel="stylesheet" href="{% static 'basic/css2.css' %}">
-    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous"> -->
-    <!-- <link rel="stylesheet" media="screen"
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'basic/css1.css' %}">
+        <link rel="stylesheet" href="{% static 'basic/css2.css' %}">
+        <!-- <link rel="stylesheet" media="screen"
         href="https://devpost-challengepost.netdna-ssl.com/assets/home/home_application-08a18373de65590ec7a61e440d2d86aa.css" /> -->
+
     <script
         src="https://devpost-challengepost.netdna-ssl.com/assets/modernizr-bef57869320b416d48fb2c5087d5e793.js"></script>
     <!--<![endif]-->
-    <style>{% block css %} {% endblock %}</style>
-    
 </head>
 
 <body id="body-softwares" class="foundation-grid action-index controller-softwares engine-home">
@@ -128,7 +126,6 @@
                             </button>
                         </form>
                     </li>
-
 
 
                     <li class="right logged-out">
@@ -192,7 +189,7 @@
       </a></span>
       
             </li> -->
-                <!-- </ul> -->
+                </ul>
 
 
                 <section class="top-bar-section">
@@ -206,26 +203,10 @@
                         <li>
                             <a data-role="projects" href="{% url 'display_projects'%}">
                                 Projects
-                            </a>
-                        </li>
+                            </a></li>
 
-                        <li class="divider"></li>
-                        <li>
-                            <a onclick="displayFilters()">
-                                Filters
-                            </a>
-                            <script>
-                                function displayFilters() {
-                                    var status = document.getElementById("filter").style.display;
-                                    if (status == 'none')
-                                        document.getElementById("filter").style.display = "flex";
-                                    else if (status == 'flex')
-                                        document.getElementById("filter").style.display = 'none';
-                                }
-                            </script>
-                        </li>
                         <li class="hide-for-small">
-                            <form method='get' class="search-bar-form large flex-row" action="/search/">
+                            <form method = 'get' class="search-bar-form large flex-row" action="/search/">
                                 <input type="search" name="search" id="search" title="Search"
                                     placeholder="Search Projects" />
                                 <button type="submit" class="button postfix dark">
@@ -233,22 +214,6 @@
                                 </button>
                             </form>
                         </li>
-
-                        <!-- <li class="divider"></li>
-                        <li class="divider"></li>
-                        <li class="hide-for-small">
-                            <div class="dropdown1">
-                                <button class="dropbtn">Filters 
-                                  <i class="fa fa-caret-down"></i>
-                                </button>
-                                <div class="dropdown1-content">
-                                  <a href="#">Link</a>
-                                  <a href="#">Link 2</a>
-                                  <a href="#">Link 3</a>
-                                </div>
-                              </div>
-                        </li> -->
-
                     </ul>
 
 
@@ -261,13 +226,16 @@
                         </ul> -->
 
                         <ul class="right logged-in">
+
+
+
                             <li class="has-dropdown not-click" id="global-nav-user-dropdown">
                                 <a class="user" id="global-nav-screen-name" aria-label="Access your account menu"
                                     href="#">
-                                    <img id="myProfile" alt="vishaljadhav9568"
-                                        class="user-avatar user-photo facebook_avatar_image image-replacement"
-                                        onerror="this.onerror=null;this.src='https://devpost-challengepost.netdna-ssl.com/assets/defaults/no-avatar-100-17cf519ce6f8e4e0e83758ea09fc5eb3.png';"
-                                        src="url('https://ibb.co/dKwKL2G')">
+                                    <img id = "myProfile" alt="vishaljadhav9568"
+                                    class="user-avatar user-photo facebook_avatar_image image-replacement"
+                                    onerror="this.onerror=null;this.src='https://devpost-challengepost.netdna-ssl.com/assets/defaults/no-avatar-100-17cf519ce6f8e4e0e83758ea09fc5eb3.png';"
+                                    src="url('https://ibb.co/dKwKL2G')">
 
                                 </a>
                                 <ul class="dropdown">
@@ -277,7 +245,8 @@
                                     <li class="divider"></li>
 
                                     <li>
-                                        <a href="{% url 'portfolio' %}">Portfolio</a>
+                                        <a
+                                            href="{% url 'portfolio' %}">Portfolio</a>
                                     </li>
                                     <li class="divider"></li>
 
@@ -302,7 +271,7 @@
                                     </li>
                                     <li class="divider"></li>
 
-
+                                   
 
                                 </ul>
                             </li>
@@ -312,173 +281,17 @@
                     </div>
                 </section>
             </nav>
-            <nav class="top-bar" data-topbar="" style="display: none;width: 100%;" id="filter">
-                <section class="top-bar-section">
-                    <ul class="left">
-                        <li class="divider"></li>
-                        <li>
-                            <form method='POST' class="search-bar-form large flex-row" action="/filters/" style="width: 100%;float: left;">
-                                {% csrf_token %}
-                                <li>
-                                    <a onclick="displayYears()" style="width: 100%;">Year of Developement</a>
-                                </li>
-                                <li>
-                                    <a onclick="displaySem()" style="width: 100%;">Project Sem</a>
-                                </li>
-                                <li>
-                                    <a onclick="displayGuide()" style="width: 100%;">Guide</a>
-                                </li>
-                                <li>
-                                    <a onclick="displayBatch()" style="width: 100%;">Batch</a>
-                                </li>
-                                <li>
-                                    <input type="submit" placeholder="Search">
-                                </li>
-                                <script>
-                                    function displayNone() {
-                                        document.getElementById("year").style.display = 'none';
-                                        document.getElementById("projectSem").style.display = 'none';
-                                        document.getElementById("batch").style.display = 'none';
-                                        document.getElementById("guide").style.display = 'none';
-                                    }
-                                    function displayYears() {
-                        
-                                        // displayNone();
-                                        var status = document.getElementById("year").style.display;
-                                        if (status == 'none')
-                                        {
-                                            document.getElementById("year").style.display = "flex";
-                                            document.getElementById("projectSem").style.display = 'none';
-                                            document.getElementById("batch").style.display = 'none';
-                                            document.getElementById("guide").style.display = 'none';
-                                        }   
-                                        else if (status == 'flex')
-                                            displayNone();
-                                    }
-                                    function displaySem() {
-                                        // displayNone();
-                                        var status = document.getElementById("projectSem").style.display;
-                                        if (status == 'none')
-                                        {
-                                            document.getElementById("year").style.display = "none";
-                                            document.getElementById("projectSem").style.display = 'flex';
-                                            document.getElementById("batch").style.display = 'none';
-                                            document.getElementById("guide").style.display = 'none';
-                                        }
-                                        else if (status == 'flex')
-                                            displayNone();
-                                    }
-                                    function displayBatch() {
-                                        // displayNone();
-                                        var status = document.getElementById("batch").style.display;
-                                        if (status == 'none')
-                                        {
-                                            document.getElementById("year").style.display = "none";
-                                            document.getElementById("projectSem").style.display = 'none';
-                                            document.getElementById("batch").style.display = 'flex';
-                                            document.getElementById("guide").style.display = 'none';
-                                        }
-                                        else if (status == 'flex')
-                                            displayNone();
-                                    }
-                                    function displayGuide() {
-                                        // displayNone();
-                                        var status = document.getElementById("guide").style.display;
-                                        if (status == 'none')
-                                        {
-                                            document.getElementById("year").style.display = "none";
-                                            document.getElementById("projectSem").style.display = 'none';
-                                            document.getElementById("batch").style.display = 'none';
-                                            document.getElementById("guide").style.display = 'flex';
-                                        }
-                                        else if (status == 'flex')
-                                            displayNone();
-                                    }
-                                </script>
-                                
-                            
-                            
-                        </li>
-                    </ul>
-                </section>
-            </nav>
         </div>
 
     </header>
-    
-
-    <!-- <form method='POST' class="search-bar-form large flex-row" action="/filters/" style="width: 100%;float: left;">
-        {% csrf_token %}
-        <div class=" top-bar flex-row" style="width: 100%;">
-        <a onclick="displayYears()" style="width: 100%;">Year of Developement</a>
-        <a onclick="displaySem()" style="width: 100%;">Project Sem</a>
-        <a onclick="displayBatch()" style="width: 100%;">Guide and Batch</a>
-        <input type="submit" placeholder="Submit">
-        
-        </div>
-        <div class=" top-bar flex-row" style="width: 100%;">
-            <br>
-            <div id="year"  style="display: none;width: 100%;" class="text-center">
-                <input type="checkbox" name="year[]" value="2000">2020 &nbsp;
-                <input type="checkbox" name="year[]" value="2021">2021 &nbsp;
-                <input type="checkbox" name="year[]" value="2022">2022 &nbsp;
-                <input type="checkbox" name="year[]" value="2023">2023 &nbsp;
-                <input type="checkbox" name="year[]" value="2024">2024 &nbsp;
-            </div>
-            <div id="projectSem" style="display: none;" class="text-center">
-                <input type="checkbox" name="sem1" value="mp1">Mini Project 1 &nbsp;
-                <input type="checkbox" name="sem2" value="mp2">Mini Project 2 &nbsp;
-
-            </div>
-            <div id="batch" style="display: none;" class="text-center">
-                <input type="checkbox" name="batch1" value="t2">T2- KPK &nbsp;
-                <input type="checkbox" name="batch2" value="t5">T5- NLG &nbsp;
-
-            </div>
 
 
-        </div>
-        
 
-        
 
-    </form> -->
 
     <section id="container" class="">
-        
-
-        <div style="width: 100%;" class="flex row mx-auto my-auto">
-            <br>
-            <div id="year"  style="display: none;width: 100%;" class="">
-                
-                {% for year in years %}
-                <input type="checkbox" name="year[]" value="{{year}}">{{year}} &nbsp;
-                {% endfor %}
-                
-            </div>
-            
-            <div id="guide"  style="display: none;width: 100%;" class="">
-                
-                {% for guide in guides %}
-                <input type="checkbox" name="guide[]" value="{{guide}}">{{guide}} &nbsp;
-                {% endfor %}
-                
-            </div>
-            <div id="projectSem" style="display: none;" class="text-center">
-                {% for sem in sems %}
-                <input type="checkbox" name="sem[]" value="{{sem}}">{{sem}} &nbsp;
-                {% endfor %}
-            </div>
-            <div id="batch" style="display: none;" class="text-center">
-                {% for batch in batches %}
-                <input type="checkbox" name="batch[]" value="{{batch}}">T{{batch}} &nbsp;
-                {% endfor %}
-                
-
-            </div>
 
 
-        </div>
 
 
         {% block body %} {% endblock %}

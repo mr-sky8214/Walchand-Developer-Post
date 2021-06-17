@@ -14,6 +14,7 @@ urlpatterns = [
     path("projects/<int:id>/<slug:slug>",views.single_project,name = 'single_project'),
     path("projects/<str:heading>/<str:search>",views.view_search, name = 'view_search'),
     path("search/",views.search,name = "search"),
+    path("filters/",views.filters,name = "filters"),
     path('verification/',views.stu_verification,name='stu_verification'),
     path('verify_otp/',views.verify_otp,name= 'verify_otp'),
     path('settings/',views.settings,name = 'settings'),

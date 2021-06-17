@@ -21,6 +21,47 @@ def get_guides():
         l.append(guide.name)
     l.append("Other")
 
+years = []
+guides = []
+project_sems = []
+batches = []
+
+def get_filters(params):
+    project1 = Project.objects.order_by('year').values('year').distinct()
+    years.clear()
+    for i in project1:
+        if(i['year']):
+            years.append(i['year'])
+
+    project2 = Project.objects.order_by('guide').values('guide').distinct()
+    guides.clear()
+    for i in project2:
+        if(i['guide']):
+            guides.append(i['guide'])
+
+    project3 = Project.objects.order_by('sem').values('sem').distinct()
+    project_sems.clear()
+    for i in project3:
+        if(i['sem']):
+            project_sems.append(i['sem'])
+
+    project4 = Project.objects.order_by('batch').values('batch').distinct()
+    batches.clear()
+    for i in project4:
+        if(i['batch']):
+            batches.append(i['batch'])
+
+    params['years'] = years
+    params['guides'] = guides
+    params['batches'] = batches
+    params['sems'] = project_sems
+
+
+
+
+
+
+
 
 def display_projects(request):
     projects = Project.objects.all()
@@ -55,10 +96,13 @@ def display_projects(request):
         params['my_template'] = 'basic.html'
     # for p in params['projects']:
     #     print(p)
+    get_filters(params)
     return render(request,"DisplayProjects.html",params)
 
 def homepage(request):
     params = {}
+    get_filters(params)
+    print(years)
     if request.user.is_authenticated:
         params['my_template'] = 'basic2.html'
         try:
@@ -74,6 +118,7 @@ def homepage(request):
                 params['profile'] = guide.photo
                 projects = Project.objects.filter(project_guide__guide_id=guide, project_guide__accept=False)
                 params['notifications'] = len(projects)
+
         except:
             pass
         # print(params)
@@ -92,6 +137,8 @@ def single_project(request,id,slug):
     project_info['tag_line'] = project.tag_line
     project_info['photo'] = project.photo
     project_info['year'] = project.year
+    project_info['sem'] = project.sem
+    project_info['batch'] = project.batch
     project_info['domain'] = project.domain
     project_info['guide'] =project.guide
     project_info['inspiration'] = project.inspiration
@@ -126,6 +173,7 @@ def single_project(request,id,slug):
 
     else:
         params['my_template'] = 'basic.html'
+    get_filters(params)
     return render(request,'Project.html',params)
 
 
@@ -207,6 +255,7 @@ def search(request):
         params['my_template'] = 'basic.html'
     # for p in params['projects']:
     #     print(p)
+    get_filters(params)
     return render(request, "SearchResult.html", params)
 
 def view_search(request,heading,search):
@@ -274,7 +323,91 @@ def view_search(request,heading,search):
         params['my_template'] = 'basic.html'
     # for p in params['projects']:
     #     print(p)
+    get_filters(params)
     return render(request, "DisplayProjects.html", params)
+
+
+def filters(request):
+    params = {}
+    if request.user.is_authenticated:
+        params['my_template'] = 'basic2.html'
+        try:
+            student = Student.objects.get(username=request.user)
+            if student is not None:
+                params['profile'] = student.photo
+        except:
+            pass
+        try:
+            guide = Guide.objects.get(username=request.user)
+            if guide is not None:
+                params['my_template'] = 'basic3.html'
+                params['profile'] = guide.photo
+                projects = Project.objects.filter(project_guide__guide_id=guide, project_guide__accept=False)
+                params['notifications'] = len(projects)
+        except:
+            pass
+        # print(params)
+    else:
+        params['my_template'] = 'basic.html'
+
+    year = request.POST.getlist("year[]")
+    sem = request.POST.getlist("sem[]")
+    batch = request.POST.getlist("batch[]")
+    guide = request.POST.getlist("guide[]")
+    # print(type(year[0]))
+    # print(year,sem,batch,guide)
+    query = 'select * from demo_project where 1=1'
+    if len(year) > 0:
+        query += ' and year in ('
+        for y in year:
+            query += y + ','
+        st = query[:-1] + ')'
+        query = st
+
+    if len(batch) > 0:
+        query += ' and batch in ('
+        for b in batch:
+            query += "'" + b + "'" + ','
+        st = query[:-1] + ')'
+        query = st
+
+    if len(guide) > 0:
+        query += ' and guide in ('
+        for g in guide:
+            query +="'" + g + "'" + ','
+        st = query[:-1] + ')'
+        query = st
+
+    if len(sem) > 0:
+        query += ' and sem in ('
+        for s in sem:
+            query += "'" + s + "'" + ','
+        st = query[:-1] + ')'
+        query = st
+
+    # print(query)
+
+
+
+    projects = Project.objects.raw(query)
+    project_list = []
+    for project in projects:
+        tmp_dict = {}
+        tmp_dict['id'] = project.id
+        tmp_dict['name'] = project.name
+        tmp_dict['tagline'] = project.tag_line
+        tmp_dict['photo'] = project.photo
+        project_list.append(tmp_dict)
+
+
+    params['projects'] = project_list
+    if len(project_list) == 0:
+        params['info'] = 'No records'
+    else:
+        params['info'] = 'Records'
+    get_filters(params)
+    return render(request, 'DisplayProjects.html', params)
+
 
 # def login(request):
 #     if request.method == 'POST':
@@ -338,7 +471,8 @@ def user_login(request):
                                 return HttpResponseRedirect('/profile/')
                     except:
                         pass
-
+                else:
+                    return HttpResponseRedirect('/sign_up/')
         else:
             fm=AuthenticationForm()
         #fm=AuthenticationForm()
@@ -428,11 +562,11 @@ def verify_otp(request):
         if request.method == 'POST':
             otp = request.POST.get('otp')
             # print(otp)
-            student = Guide.objects.get(username = request.user)
+            student = Student.objects.get(username = request.user)
 
             if(str(student.otp) == otp):
                 # print("Jamal")
-                Guide.objects.filter(username = request.user).update(verified = True)
+                Student.objects.filter(username = request.user).update(verified = True)
                 return HttpResponseRedirect('/profile/')
             else:
                 return render(request,'verification.html',{'name':request.user,'email':request.user.email,'msg':"Entered Wrong OTP ,please enter correct OTP"})
@@ -504,6 +638,7 @@ def settings(request):
     if request.user.is_authenticated:
         # image_upload = ImageUpload()
         params['my_template'] = 'basic2.html'
+        get_filters(params)
         try:
             student = Student.objects.get(username = request.user)
             if student is not  None:
@@ -557,6 +692,7 @@ def settings(request):
 
 def save_changes(request):
     params = {}
+    get_filters(params)
     if request.user.is_authenticated:
         if request.method == 'POST':
             pic = request.POST.get("image")
@@ -575,6 +711,7 @@ def save_changes(request):
 
 def portfolio(request):
     params = {}
+    get_filters(params)
     if request.user.is_authenticated:
         params['my_template'] = 'basic2.html'
         try:
@@ -655,19 +792,22 @@ def add_project(request):
             messages.success(request,'Successfully Added')
             fm.save()
             student = Student.objects.get(username=request.user)
-
+            #
             project = Project.objects.filter(name = fm.cleaned_data['name'], tag_line = fm.cleaned_data['tag_line'])[0]
 
             pro = Project_Student(project_id=project, student_id=student)
             pro.save()
-            teacher = request.POST.get("teacher")
-            if teacher == "Other":
-                (Project.objects.filter(name = fm.cleaned_data['name'], tag_line = fm.cleaned_data['tag_line'])[0]).update(verified = True)
-                return HttpResponseRedirect('/portfolio/')
-            guide = Guide.objects.get(name = teacher)
-            project.guide = teacher
-            project.save()
-            print(type(guide))
+            teacher_name = fm.cleaned_data['guide']
+            batch = fm.cleaned_data['batch']
+            # print(teacher_name,batch)
+            # teacher = request.POST.get(teacher_name)
+            # if teacher == "Other":
+            #     (Project.objects.filter(name = fm.cleaned_data['name'], tag_line = fm.cleaned_data['tag_line'])[0]).update(verified = True)
+            #     return HttpResponseRedirect('/portfolio/')
+            guide = Guide.objects.get(name = teacher_name)
+            # project.guide = teacher_name
+            # project.save()
+            # print(type(guide))
             pro_gui = Project_Guide(project_id = project, guide_id = guide)
             pro_gui.save()
             # mail to teacher
@@ -682,7 +822,7 @@ def add_project(request):
 
     params = {}
     if request.user.is_authenticated:
-        params['my_template'] = 'basic2.html'
+        params['my_template'] = 'basic4.html'
         student = Student.objects.get(username=request.user)
         params['profile'] = student.photo
         params['name'] = student.name
@@ -797,6 +937,7 @@ def add_project(request):
 def guide_project_notification(request):
     if request.user.is_authenticated:
         params = {}
+        get_filters(params)
         if request.method == 'POST':
             # print("POST")
             project_id = request.POST.get('project_id')

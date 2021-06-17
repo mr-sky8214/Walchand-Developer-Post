@@ -1,26 +1,118 @@
-{% extends my_template %} {% block body %} {% if profile %}
+{% extends my_template %} 
+{% block css %}
+  ul{
+      background-color:black;
+      display: inline;
+    }
+    {% endblock %}
+{% block body %} {% if profile %}
+
 <script>
   document.getElementById("myProfile").src = "{{profile.url}}";
   console.log("{{profile}}");
 </script>
 {% endif %}
+<script>
+  const acceArray = [];
+</script>
+
 
 <div class="content-section">
   <div class="row">
     <div class="small-12 large-9 columns">
-      <form method="post" enctype="multipart/form-data">
-        {% csrf_token %} {{ form.as_p }}
+      <form method="post" enctype="multipart/form-data" class="row" id="form_project" action="{% url 'add_project'%}">
+        {% csrf_token %}
+        <div>
+          <label>Name of the project: </label>
+          {{form.name}}
+        </div>
+        <div>
+          <label>TagLine of the project: </label>
+          {{form.tag_line}}
+        </div>
+        <div>
+          <label>Photo of the project: </label>
+          {{form.photo}}
+        </div>
+        <div>
+          <label>Year Of Development: </label>
+          {{form.year}}
+        </div>
+        <div>
+          <label>Mini Project </label>
+          {{form.sem}}
+        </div>
+        <div class="d-inline">
+          <label>Batch </label>
+          {{form.batch}}
+        </div>
+        <br>
+        <div>
+          <label>Guides: </label>
+          {{form.guide}}
+        </div>
+        <div>
+          <label>Domain: </label>
+          {{form.domain}}
+        </div>
+        <div>
+          <label>Inspiration: </label>
+          {{form.inspiration}}
+        </div>
+        <div>
+          <label>What it Does: </label>
+          {{form.what_it_does}}
+        </div>
+        <div>
+          <label>How we built: </label>
+          {{form.how_we_build}}
+        </div>
+        <div>
+          <label>Challenges we ran into: </label>
+          {{form.challenges}}
+        </div>
+        <div>
+          <label>Accomplishments: </label>
+          {{form.accomplishment}}
+        </div>
+        <div>
+          <label>What we Learned: </label>
+          {{form.we_learned}}
+        </div>
+        <div>
+          <label>What's next: </label>
+          {{form.whats_next}}
+        </div>
+        <div>
+          <label>GitHub Link: </label>
+          {{form.github}}
+        </div>
+        <div>
+          <label>Hosted Link: </label>
+          {{form.hosted}}
+        </div>
+        
+        <!-- {{ form.as_ul }} -->
 
-        <label for="data1">Guide</label>
+        <!-- <label for="data1">Guide</label>
         <input list="data1" name = "teacher">
-        <datalist id = "data1">
+
+               <datalist id = "data1">
           {% for i in guides %}
             <option value="{{i}}">
           {% endfor %}
         </datalist>
         <br>
-        <br>
-        <button type="submit">Upload</button>
+        <br> -->
+        <!-- <input type="button" onclick="document.forms[0].submit()"/> -->
+        <button onclick="project_form()" type="submit" name="new_project">Upload</button>
+        <script>
+          function project_form()
+          {
+            // document.getElementById("form_project").action = ;
+            document.getElementById("form_project").submit();
+          }
+        </script>
       </form>
       </div>
   </div>

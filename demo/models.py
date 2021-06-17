@@ -13,6 +13,8 @@ class Project(models.Model):
     tag_line = models.CharField(max_length=100,default="")
     photo = models.ImageField(upload_to='project/images/')
     year = models.IntegerField()
+    sem = models.CharField(max_length=100,default="")
+    batch = models.CharField(max_length=100,default="")
     domain = models.CharField(max_length=100)
     guide = models.CharField(max_length=100)
     inspiration = models.TextField(max_length=5000)

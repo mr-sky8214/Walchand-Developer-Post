@@ -33,10 +33,20 @@ class AddProject(forms.ModelForm):
 
     # guide = forms.ModelChoiceField(queryset=Guide.objects.all(), widget= ListTextWidget())
     # guide = forms.Data
+    CHOICES = [('1', 'T1'), ('2', 'T2'), ('3', 'T3'), ('4', 'T4'), ('5', 'T5'), ('6', 'T6'),('7', 'T7'),('8', 'T8')]
+    semester = [('Mini project 1','Mini project 1'),('Mini project 2','Mini project 2')]
+    guides = Guide.objects.order_by().values('name').distinct()
+    guide_list = []
+    for i in guides:
+       t = (i['name'],i['name'])
+       guide_list.append(t)
+    guide = forms.CharField(label='Guides', widget=forms.RadioSelect(choices=guide_list))
+    batch = forms.CharField(label='Batch', widget=forms.RadioSelect(choices=CHOICES))
+    sem = forms.CharField(label='Sem', widget=forms.RadioSelect(choices=semester))
     class Meta:
         # guide = forms.ModelChoiceField()
         model = Project
         # guide = forms.ChoiceField(choices= l1)
-        fields = ['name','tag_line','photo','year','domain','inspiration','what_it_does','how_we_build','challenges','accomplishment','we_learned','whats_next','github','hosted']
+        fields = ['name','tag_line','photo','year','batch','guide','sem','domain','inspiration','what_it_does','how_we_build','challenges','accomplishment','we_learned','whats_next','github','hosted']
         labels = { 'year':'Year of developement','what_it_does':'What it does','how_we_build':'How we build it','challenges':'Challenges we ran into','accomplishment':'Accomplishment that we are proud of','we_learned':'What we learnt','whats_next':'Whats next','github':'Github link of project','hosted':'Hosted Link'}
         
