@@ -67,12 +67,13 @@ def display_projects(request):
     projects = Project.objects.all()
     project_list = []
     for project in projects:
-        tmp_dict ={}
-        tmp_dict['id'] = project.id
-        tmp_dict['name'] = project.name
-        tmp_dict['tagline'] = project.tag_line
-        tmp_dict['photo'] = project.photo
-        project_list.append(tmp_dict)
+        if(project.verified == True):
+            tmp_dict ={}
+            tmp_dict['id'] = project.id
+            tmp_dict['name'] = project.name
+            tmp_dict['tagline'] = project.tag_line
+            tmp_dict['photo'] = project.photo
+            project_list.append(tmp_dict)
     opt = 0
     params = {'projects' : project_list,'opt': opt,'info': 'top projects'}
     if request.user.is_authenticated:
@@ -713,6 +714,76 @@ def portfolio(request):
     params = {}
     get_filters(params)
     if request.user.is_authenticated:
+         try:
+            student = Student.objects.get(username=request.user)
+            if student is not None:
+                projects = Project.objects.filter(project_student__student_id=student)
+                # print(projects)
+                project_list = []
+
+                for project in projects:
+                    dict = {}
+
+                    # print(p)
+                    dict['id'] = project.id
+                    dict['photo'] = project.photo
+                    dict['name'] = project.name
+                    dict['tag_line'] = project.tag_line
+                    if(project.verified):
+                        dict['verified'] = "Accepted"
+                    else:
+                        dict['verified'] = "Rejected"
+                    project_list.append(dict)
+
+                params['projects'] = project_list
+                if student.photo:
+                    params['profile'] = student.photo
+                else:
+                    params['profile'] = "../media/Profile1.jpg"
+                params['name'] = student.name
+                params['username'] = student.username
+                params['len'] = len(projects)
+                return render(request, 'Portfolio.html', params)
+         except:
+             pass
+         try:
+            guide = Guide.objects.get(username=request.user)
+            if guide is not None:
+                params['my_template'] = 'basic3.html'
+                projects = Project.objects.filter(project_guide__guide_id=guide, project_guide__accept=True)
+                # print(projects)
+                project_list = []
+                for project in projects:
+                    dict = {}
+
+                    # print(p)
+                    dict['id'] = project.id
+                    dict['photo'] = project.photo
+                    dict['name'] = project.name
+                    dict['tag_line'] = project.tag_line
+                    project_list.append(dict)
+
+                params['projects'] = project_list
+                if guide.photo:
+                    params['profile'] = guide.photo
+                else:
+                    params['profile'] = "../media/Profile1.jpg"
+                params['name'] = guide.name
+                params['username'] = guide.username
+                projects = Project.objects.filter(project_guide__guide_id=guide, project_guide__accept=False)
+                params['notifications'] = len(projects)
+                # params['len'] = len(projects)
+                return render(request, 'Portfolio.html', params)
+            # return render(request, 'profile.html', {'name': request.user, 'profile': guide.photo,'my_template':'basic3.html'})
+         except:
+             pass
+
+
+
+    else:
+        return HttpResponseRedirect('/login/')
+
+    if request.user.is_authenticated:
         params['my_template'] = 'basic2.html'
         try:
             student = Student.objects.get(username=request.user)
@@ -937,11 +1008,14 @@ def add_project(request):
 def guide_project_notification(request):
     if request.user.is_authenticated:
         params = {}
-        get_filters(params)
-        if request.method == 'POST':
-            # print("POST")
+        # get_filters(params)
+        print(request.method)
+        if request.method=="POST":
+            print("POST")
             project_id = request.POST.get('project_id')
             # print(project_id)
+            # print()
+            print(project_id)
             status = request.POST.get('status')
             # print(status)
             project = Project.objects.get(id = project_id)
@@ -950,6 +1024,7 @@ def guide_project_notification(request):
             student = Student.objects.filter(project_student__project_id=project)
             # print(student)
             guide = Guide.objects.get(username = request.user)
+            print(status)
             if status == 'accept':
                 Project_Guide.objects.filter(project_id = project, guide_id = guide).update(accept = True)
                 project.verified = True
@@ -989,12 +1064,14 @@ def guide_project_notification(request):
                 params['profile'] = "../media/Profile1.jpg"
             params['name'] = guide.name
             params['username'] = guide.username
-            params['my_template'] = 'basic3.html'
+            params['my_template'] = 'basic4.html'
 
             return render(request,'Notifications.html',params)
 
         except:
             return HttpResponseRedirect('/login/')
+    else:
+        return HttpResponseRedirect('/login/')
 
 
 

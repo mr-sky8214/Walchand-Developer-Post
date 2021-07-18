@@ -1,4 +1,4 @@
-{% extends my_template %} {% block body %} {% if profile %}
+{% extends "basic4.html" %} {% block body %} {% if profile %}
 <script>
   document.getElementById("myProfile").src = "{{profile.url}}";
   console.log("{{profile}}");
