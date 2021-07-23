@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django import forms
+from datetime import date
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 from .models import *
@@ -33,6 +34,15 @@ class AddProject(forms.ModelForm):
 
     # guide = forms.ModelChoiceField(queryset=Guide.objects.all(), widget= ListTextWidget())
     # guide = forms.Data
+    def clean_year(self):
+        todays_date = date.today()
+        year = self.cleaned_data['year']
+        # print(year,todays_date.year)
+        if not (year >= 1947 and year <= todays_date.year):
+            # print("error")
+            raise ValidationError("Please enter valid Year")
+        return year
+
     CHOICES = [('1', 'T1'), ('2', 'T2'), ('3', 'T3'), ('4', 'T4'), ('5', 'T5'), ('6', 'T6'),('7', 'T7'),('8', 'T8')]
     semester = [('Mini project 1','Mini project 1'),('Mini project 2','Mini project 2')]
     guides = Guide.objects.order_by().values('name').distinct()

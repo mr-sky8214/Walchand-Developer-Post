@@ -4,6 +4,13 @@
       background-color:black;
       display: inline;
     }
+    .er{
+      padding-top: 5px;
+      color:#ffc757;
+      font-family: 'Poppins';
+      font-size: 15px;
+      font-weight: 100;
+      }
     {% endblock %}
 {% block body %} {% if profile %}
 
@@ -22,6 +29,11 @@
     <div class="small-12 large-9 columns">
       <form method="post" enctype="multipart/form-data" class="row" id="form_project" action="{% url 'add_project'%}">
         {% csrf_token %}
+        <!-- <script>
+          if("{{fm.errors}}")
+            alert("{{fm.errors}}");
+            console.log("{{fm.errors}}")
+        </script> -->
         <div>
           <label>Name of the project: </label>
           {{form.name}}
@@ -37,6 +49,11 @@
         <div>
           <label>Year Of Development: </label>
           {{form.year}}
+          <!-- <script>
+            if("{{fm.errors|striptags}}")
+              alert("{{fm.errors|striptags}}");
+          </script>
+          <p class="er">{{fm.errors|striptags}}</p> -->
         </div>
         <div>
           <label>Mini Project </label>

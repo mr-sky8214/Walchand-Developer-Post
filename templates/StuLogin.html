@@ -110,8 +110,11 @@
                 {% endfor %}
                 <!-- <input type="submit" value="Sign In"> -->
                 <button type="submit" id="submit-form" class="button reimagine-button login-button" tabindex="4">
-                    <i class="far fa-envelope" aria-hidden="true"></i> Log in with email
+                    <i class="far fa-envelope" aria-hidden="true"></i> Log in
                 </button>
+                <a id="change_password" class="small-text" tabindex="8" href="{% url 'reset_password'%}">Forgot your password?</a>
+
+                
             
         </div>
 

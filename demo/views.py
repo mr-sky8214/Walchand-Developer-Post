@@ -546,7 +546,7 @@ def sign_up(request):
 def stu_verification(request):
     if request.user.is_authenticated:
 
-        student = Guide.objects.get(username=request.user)
+        student = Student.objects.get(username=request.user)
 
         # subject = 'Account Verification'
         # message = f'Hi ,Your OTP for verification is {student.otp}'
