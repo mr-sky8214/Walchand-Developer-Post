@@ -548,11 +548,11 @@ def stu_verification(request):
 
         student = Student.objects.get(username=request.user)
 
-        # subject = 'Account Verification'
-        # message = f'Hi ,Your OTP for verification is {student.otp}'
-        # email_from = 'medicatorvs@gmail.com'
-        # recipient_list = [str(request.user.email), ]
-        # send_mail(subject, message, email_from, recipient_list)
+        subject = 'Account Verification'
+        message = f'Hi ,Your OTP for verification is {student.otp}'
+        email_from = 'medicatorvs@gmail.com'
+        recipient_list = [str(request.user.email), ]
+        send_mail(subject, message, email_from, recipient_list)
         print(student.otp)
         return render(request,'verification.html',{'name':request.user,'email':request.user.email,'msg':None})
     else:
